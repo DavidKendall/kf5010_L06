@@ -50,10 +50,8 @@ void *count1_thr(void * arg) {
         if ((count1 + count2) != total) {
             flashing = true;
         }
+        lcd_write_at(1, 0, "count1 = %20d", count1);
         need1 = false;
-        lcd_set_pos(1, 0);
-        lcd_write("count1 = %20d", count1);
-        /*lcd_write_at(1, 0, "count1 = %20d", count1);*/
     }
     while (true) {
         /* skip */
@@ -73,10 +71,8 @@ void *count2_thr(void * arg) {
         if ((count1 + count2) != total) {
             flashing = true;
         }
+        lcd_write_at(2, 0, "count2 = %20d", count2);
         need2 = false;
-        lcd_set_pos(2, 0);
-        lcd_write("count2 = %20d", count2);
-        /*lcd_write_at(2, 0, "count2 = %20d", count2);*/
     }
     while (true) {
         /* skip */
