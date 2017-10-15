@@ -10,7 +10,7 @@
 
 #include "console.h"
 
-#define N_DARTS 4000000000UL
+#define N_DARTS 400000000UL
 #define N_THREADS 1
 
 static int timer(int stop);
@@ -25,10 +25,8 @@ int main (void) {
     console_init();
     srand(time(NULL));
     start_timer();
-    /*(void)timer(0);*/
     pi_approx = estimate_pi();
     execution_time = stop_timer();
-    /*execution_time = timer(1);*/
     lcd_write_at(1, 0, "pi    is %1.10G\n", pi_approx);
     lcd_write_at(2, 0, "time  is %d us\n", execution_time); 
 
@@ -73,7 +71,7 @@ static double estimate_pi(void) {
     double r;
     double x;
     double y;
-    unsigned long in_board;
+    unsigned long hit_board;
     unsigned long i;
 
     assert((N_DARTS % N_THREADS) == 0);
@@ -83,9 +81,9 @@ static double estimate_pi(void) {
         r = ((double)rand()) / (RAND_MAX);
         y = 2.0 * r - 1.0;
         if (((x * x) + (y * y)) <= 1.0) {
-            in_board += 1;
+            hit_board += 1;
         }
     }
-    return 4.0 * ((double)in_board / (double)(N_DARTS));
+    return 4.0 * ((double)hit_board / (double)(N_DARTS / N_THREADS));
 }
 
