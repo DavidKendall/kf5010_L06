@@ -6,17 +6,19 @@
 #include <assert.h>
 #include <pthread.h>
 #include <time.h>
-#include <math.h>
 
 #include "console.h"
 
-#define N_DARTS 300000000UL
+#define N_DARTS 3000000000UL
 #define N_THREADS 1
+
+static unsigned long hit;
+static unsigned long tot;
 
 static int timer(int stop);
 static void start_timer(void);
 static int stop_timer(void);
-static double estimate_pi(void);
+static void simulate(void);
 
 int main (void) {
     int execution_time;
@@ -25,10 +27,12 @@ int main (void) {
     console_init();
     srand(time(NULL));
     start_timer();
-    pi_approx = estimate_pi();
+    simulate();
+    pi_approx = 4.0 * ((double)hit / tot);
     execution_time = stop_timer();
-    lcd_write_at(1, 0, "pi    is %1.10G\n", pi_approx);
+    lcd_write_at(1, 0, "pi    is %1.9G\n", pi_approx);
     lcd_write_at(2, 0, "time  is %d us\n", execution_time); 
+    lcd_write_at(3, 0, "Thread 0 ratio (hit/total): %ld / %ld", hit, tot);
 
     while (true) {
         /* skip */
@@ -74,12 +78,15 @@ static int stop_timer(void) {
     return timer(1);
 }
 
-static double estimate_pi(void) {
+/**
+ * @brief The Monte Carlo simulation used in the estimation of pi
+ */
+static void simulate(void) {
     double r;
     double x;
     double y;
     unsigned long hit_board = 0;
-    unsigned long tot = 0;
+    unsigned long total = 0;
     unsigned long i;
     struct drand48_data rand_state;
     int rc;
@@ -95,8 +102,9 @@ static double estimate_pi(void) {
         if (((x * x) + (y * y)) <= 1.0) {
             hit_board += 1;
         }
-        tot += 1;
+        total += 1;
     }
-    return 4.0 * ((double)hit_board / tot);
+    hit = hit_board;
+    tot = total;
 }
 
