@@ -99,12 +99,16 @@ static void *estimate_pi_thr(void *arg) {
     unsigned long tot = 0;
     unsigned long id = (unsigned long)arg;
     unsigned long i;
+    struct drand48_data rand_state;
+    int rc;
 
     assert((N_DARTS % N_THREADS) == 0);
+    rc = srand48_r((long)id * 10 + time(NULL), &rand_state); 
+    assert(rc == 0);
     for (i = 0; i < (N_DARTS / N_THREADS); i += 1) {
-        r = ((double)rand()) / (RAND_MAX);
+        rc = drand48_r(&rand_state, &r);
         x = 2.0 * r - 1.0;
-        r = ((double)rand()) / (RAND_MAX);
+        rc = drand48_r(&rand_state, &r);
         y = 2.0 * r - 1.0;
         if (((x * x) + (y * y)) <= 1.0) {
             hit_board += 1;
