@@ -78,19 +78,25 @@ static double estimate_pi(void) {
     double r;
     double x;
     double y;
-    unsigned long hit_board;
+    unsigned long hit_board = 0;
+    unsigned long tot = 0;
     unsigned long i;
+    struct drand48_data rand_state;
+    int rc;
 
     assert((N_DARTS % N_THREADS) == 0);
+    rc = srand48_r((long)time(NULL), &rand_state);
+    assert(rc == 0);
     for (i = 0; i < (N_DARTS / N_THREADS); i += 1) {
-        r = ((double)rand()) / (RAND_MAX);
+        rc = drand48_r(&rand_state, &r);
         x = 2.0 * r - 1.0;
-        r = ((double)rand()) / (RAND_MAX);
+        rc = drand48_r(&rand_state, &r);
         y = 2.0 * r - 1.0;
         if (((x * x) + (y * y)) <= 1.0) {
             hit_board += 1;
         }
+        tot += 1;
     }
-    return 4.0 * ((double)hit_board / (double)(N_DARTS / N_THREADS));
+    return 4.0 * ((double)hit_board / tot);
 }
 
