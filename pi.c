@@ -13,7 +13,7 @@
 #define N_THREADS 3
 
 static unsigned long hit[N_THREADS];
-static unsigned long total[N_THREADS];
+static unsigned long tot[N_THREADS];
 
 static int timer(int stop);
 static void start_timer(void);
@@ -22,6 +22,7 @@ static void *estimate_pi_thr(void *arg);
 
 int main (void) {
     unsigned long hit_board = 0;
+    unsigned long total = 0;
     int execution_time;
     double pi_approx;
     unsigned long i;
@@ -39,13 +40,14 @@ int main (void) {
         rc = pthread_join(thread[i], NULL);
         assert(rc == 0);
         hit_board += hit[i];
+        total += tot[i];
     }
-    pi_approx = 4.0 * ((double)hit_board / (double)(N_DARTS));
+    pi_approx = 4.0 * ((double)hit_board / total);
     execution_time = stop_timer();
-    lcd_write_at(1, 0, "pi    is %1.10G\n", pi_approx);
+    lcd_write_at(1, 0, "pi    is %1.9G\n", pi_approx);
     lcd_write_at(2, 0, "time  is %d us\n", execution_time);
     for (i = 0; i < N_THREADS; i += 1) {
-        lcd_write_at(3+i, 0, "Thread %d ratio (hit/total): %d / %d\n", i, hit[i], total[i]);
+        lcd_write_at(3+i, 0, "Thread %d ratio (hit/total): %d / %d\n", i, hit[i], tot[i]);
     }
     while (true) {
         /* skip */
@@ -96,7 +98,7 @@ static void *estimate_pi_thr(void *arg) {
     double x;
     double y;
     unsigned long hit_board = 0;
-    unsigned long tot = 0;
+    unsigned long total = 0;
     unsigned long id = (unsigned long)arg;
     unsigned long i;
     struct drand48_data rand_state;
@@ -113,10 +115,10 @@ static void *estimate_pi_thr(void *arg) {
         if (((x * x) + (y * y)) <= 1.0) {
             hit_board += 1;
         }
-        tot += 1;
+        total += 1;
     }
     hit[id] = hit_board;
-    total[id] = tot;
+    tot[id] = total;
     pthread_exit(NULL);
 }
 
