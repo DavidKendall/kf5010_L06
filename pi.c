@@ -10,7 +10,7 @@
 
 #include "console.h"
 
-#define N_DARTS 400000000UL
+#define N_DARTS 300000000UL
 #define N_THREADS 1
 
 static int timer(int stop);
@@ -59,10 +59,17 @@ static int timer(int stop) {
     return result;
 }
 
+/** 
+ * @brief Calls the timer function to start the timer
+ */
 static void start_timer(void) {
     (void)timer(0);
 }
 
+/**
+ * @brief Calls the timer function to stop the timer 
+ * @return the time elapsed in microseconds since the timer was started
+ */
 static int stop_timer(void) {
     return timer(1);
 }
