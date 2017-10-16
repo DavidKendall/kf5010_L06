@@ -47,7 +47,7 @@ int main (void) {
     lcd_write_at(1, 0, "pi    is %1.9G\n", pi_approx);
     lcd_write_at(2, 0, "time  is %d us\n", execution_time);
     for (i = 0; i < N_THREADS; i += 1) {
-        lcd_write_at(3+i, 0, "Thread %d ratio (hit/total): %d / %d\n", i, hit[i], tot[i]);
+        lcd_write_at(3+i, 0, "Thread %ld ratio (hit/total): %ld / %ld\n", i, hit[i], tot[i]);
     }
     while (true) {
         /* skip */
