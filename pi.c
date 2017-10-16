@@ -18,7 +18,7 @@ static unsigned long tot[N_THREADS];
 static int timer(int stop);
 static void start_timer(void);
 static int stop_timer(void);
-static void *estimate_pi_thr(void *arg);
+static void *simulate_thr(void *arg);
 
 int main (void) {
     unsigned long hit_board = 0;
@@ -33,7 +33,7 @@ int main (void) {
     srand(time(NULL));
     start_timer();
     for (i = 0; i < N_THREADS; i += 1) {
-        rc = pthread_create(&thread[i], NULL, estimate_pi_thr, (void *)i);
+        rc = pthread_create(&thread[i], NULL, simulate_thr, (void *)i);
         assert(rc == 0);
     }
     for (i = 0; i < N_THREADS; i += 1) {
@@ -93,7 +93,10 @@ static int stop_timer(void) {
     return timer(1);
 }
 
-static void *estimate_pi_thr(void *arg) {
+/**
+ * @brief Thread to run the Monte Carlo simulation used in the estimation of pi
+ */
+static void *simulate_thr(void *arg) {
     double r;
     double x;
     double y;
