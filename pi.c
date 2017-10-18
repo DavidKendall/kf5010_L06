@@ -30,7 +30,6 @@ int main (void) {
     pthread_t thread[N_THREADS];
 
     console_init();
-    srand(time(NULL));
     start_timer();
     for (i = 0; i < N_THREADS; i += 1) {
         rc = pthread_create(&thread[i], NULL, simulate_thr, (void *)i);
