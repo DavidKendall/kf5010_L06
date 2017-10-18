@@ -9,7 +9,7 @@
 
 #include "console.h"
 
-#define N_DARTS 3000000000UL
+#define N_DARTS 300000000UL
 #define N_THREADS 1
 
 static unsigned long hit;
@@ -25,7 +25,6 @@ int main (void) {
     double pi_approx;
 
     console_init();
-    srand(time(NULL));
     start_timer();
     simulate();
     pi_approx = 4.0 * ((double)hit / tot);
